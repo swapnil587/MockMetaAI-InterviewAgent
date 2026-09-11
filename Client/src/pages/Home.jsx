@@ -27,6 +27,7 @@ function Home() {
   const { userData } = useSelector((state) => state.user);
   const [showAuth, setShowAuth] = useState(false);
   const navigate = useNavigate();
+
   const array = [
     {
       icon: <BsRobot size={24} />,
@@ -47,6 +48,7 @@ function Home() {
       desc: "Real interview pressure with time tracking.",
     },
   ];
+
   const images = [
     {
       image: evalImg,
@@ -102,6 +104,7 @@ function Home() {
       <Navbar />
       <div className="flex-1 px-6 py-20 ">
         <div className="max-w-6xl mx-auto">
+          
           <div className="flex justify-center mb-6">
             <div className="bg-gray-100 text-gray-600 textsm px-4 py-2 rounded-full flex items-center gap-2">
               <HiSparkles size={16} className="bg-green-50 text-green-600" />

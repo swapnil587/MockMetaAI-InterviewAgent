@@ -19,6 +19,7 @@ function Navbar() {
    const [showUserPopUp, setUserPopUp]= useState(false)
    const navigate=useNavigate()
    const dispatch=useDispatch()
+   
    const [showAuth, setShowAuth]=useState(false);
 
 
@@ -111,6 +112,7 @@ function Navbar() {
                 </div>
 
             </div>
+
 
         </motion.div>
         {showAuth && <AuthModel onClose={()=>setShowAuth(false)}/>}

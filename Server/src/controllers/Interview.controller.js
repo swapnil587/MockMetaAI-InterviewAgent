@@ -9,6 +9,7 @@ export const analyzeResume = async (req, res) => {
         message: "Resume required",
       });
     }
+
     const filepath = req.file.path;
     const fileBuffer = await fs.promises.readFile(filepath);
     const uint8Array = new Uint8Array(fileBuffer);
@@ -28,21 +29,32 @@ export const analyzeResume = async (req, res) => {
 
     resumeText = resumeText.replace(/\s+/g, " ").trim();
 
-    const messages = [
-      {
-        role: "system",
-        content: ` Extract structured data from resume. Return strictly JSON : {
-            "role": "string",
-            "experience": "string",
-            "projects": ["project1", "project2"],
-            "skills": ["skill1", "skill2"]
-            }`,
-      },
-      {
-        role: "user",
-        content: resumeText,
-      },
-    ];
+    
+   const messages = [
+  {
+    role: "system",
+    content: `You are a resume parser.
+
+Extract the following information from the resume.
+
+Return ONLY valid JSON.
+Do NOT use markdown.
+Do NOT use \`\`\`json.
+Do NOT add any explanation.
+
+Format:
+{
+  "role": "string",
+  "experience": "string",
+  "projects": ["project1", "project2"],
+  "skills": ["skill1", "skill2"]
+}`,
+  },
+  {
+    role: "user",
+    content: resumeText,
+  },
+];
 
     const aiResponse= await askAi(messages)
     const parsed= JSON.parse(aiResponse);
@@ -57,14 +69,18 @@ export const analyzeResume = async (req, res) => {
         resumeText
     })
   
-  } catch (error) {
-    console.error("Resume analysis error:", error);
-    if(req.file && fs.existsSync(req.file.path)){
-        fs.unlinkSync(req.file.path);
-    }
+ } 
+catch (error) {
+  console.error("Resume analysis error:", error);
+  console.error("Error message:", error.message);
 
-    return res.status(500).json({
-      message: "Failed to analyze resume",
-    });
+  if (req.file && fs.existsSync(req.file.path)) {
+    fs.unlinkSync(req.file.path);
   }
-};
+
+  return res.status(500).json({
+    message: "Failed to analyze resume",
+    error: error.message,
+  });
+}};
+
